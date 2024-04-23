@@ -1,0 +1,31 @@
+name: Build V8
+
+on:
+  push:
+    branchs: [master]
+    paths:
+    - 'builders/**'
+    - '.github/workflows/build.yml'
+
+jobs:
+  build_windows:
+    name: Windows
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run build script
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        call .\builders\v8-windows.cmd 10.8.168.25
+    - uses: actions/upload-artifact@v2
+      with:
+        name: windows
+        path: |
+          v8/v8/out.gn/x64.release/*.dll
+          v8/v8/out.gn/x64.release/*.pdb
+          v8/v8/out.gn/x64.release/*.lib
+          v8/v8/out.gn/x64.release/*.exp
+          v8/v8/out.gn/x64.release/*.ilk
+          v8/v8/out.gn/x64.release/*.exe
+          v8/v8/out.gn/x64.release/*.dat
